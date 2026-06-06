@@ -9,7 +9,7 @@ _NHL Team Schedule_ is a plugin for [InkyPi](https://github.com/fatihak/InkyPi) 
 Use the InkyPi plugin installer with the plugin ID and this repository URL, following the install pattern shown by the official InkyPi plugin documentation.
 
 ```bash
-inkypi plugin install nhl_team_schedule https://github.com/shadal18/inkypi-nhl-schedule
+inkypi plugin install nhl_team_schedule https://github.com/shadal18/inkypi-nhl-team-schedule
 ```
 
 ## Update
@@ -72,7 +72,7 @@ The plugin settings page lets you customize:
 
 GitHub repository:
 
-[https://github.com/shadal18/inkypi-nhl-schedule](https://github.com/shadal18/inkypi-nhl-schedule)
+[https://github.com/shadal18/inkypi-nhl-team-schedule](https://github.com/shadal18/inkypi-nhl-team-schedule)
 
 ## Screenshots
 
