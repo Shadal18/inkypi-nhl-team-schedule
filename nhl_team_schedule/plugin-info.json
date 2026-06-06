@@ -1,0 +1,6 @@
+{
+  "display_name": "NHL Team Schedule",
+  "id": "nhl_team_schedule",
+  "class": "HockeyNightBoard",
+  "repository": "https://github.com/shadal18/inkypi-nhl-team-schedule"
+}

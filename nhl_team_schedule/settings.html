@@ -1,0 +1,451 @@
+<form>
+  <input type="hidden" name="plugin_id" value="nhl_team_schedule" />
+
+  <style>
+    :root {
+      --nhl-bg: var(--background-color, var(--color-background, #f5f7fb));
+      --nhl-bg-soft: var(--card-background-secondary, var(--color-surface-2, #eef2f7));
+      --nhl-panel: var(--card-background, var(--color-surface, #ffffff));
+      --nhl-panel-2: var(--card-background-hover, var(--color-surface-2, #f8fafc));
+      --nhl-border: var(--border-color, rgba(15, 23, 42, 0.12));
+      --nhl-border-strong: var(--border-color-strong, rgba(15, 23, 42, 0.18));
+      --nhl-text: var(--text-primary, var(--color-text, #0f172a));
+      --nhl-text-muted: var(--text-secondary, var(--color-text-secondary, #475569));
+      --nhl-text-soft: var(--text-muted, #64748b);
+
+      --nhl-primary: var(--accent-color, #14b8a6);
+      --nhl-info: var(--info-color, #3b82f6);
+      --nhl-gold: color-mix(in srgb, #f4c542 72%, var(--nhl-panel) 28%);
+
+      --nhl-shadow-sm: 0 8px 24px rgba(15, 23, 42, 0.08);
+      --nhl-radius-xl: 18px;
+      --nhl-radius-lg: 14px;
+    }
+
+    html.dark,
+    body.dark,
+    [data-theme="dark"],
+    html[data-theme="dark"] {
+      --nhl-bg: var(--background-color, var(--color-background, #0f172a));
+      --nhl-bg-soft: var(--card-background-secondary, var(--color-surface-2, #162033));
+      --nhl-panel: var(--card-background, var(--color-surface, #111827));
+      --nhl-panel-2: var(--card-background-hover, var(--color-surface-2, #172033));
+      --nhl-border: var(--border-color, rgba(255, 255, 255, 0.1));
+      --nhl-border-strong: var(--border-color-strong, rgba(255, 255, 255, 0.16));
+      --nhl-text: var(--text-primary, var(--color-text, #f8fafc));
+      --nhl-text-muted: var(--text-secondary, var(--color-text-secondary, #cbd5e1));
+      --nhl-text-soft: var(--text-muted, #94a3b8);
+      --nhl-shadow-sm: 0 10px 28px rgba(0, 0, 0, 0.22);
+    }
+
+    .nhl-settings-container {
+      width: 100%;
+      box-sizing: border-box;
+      color: var(--nhl-text);
+    }
+
+    .nhl-shell {
+      display: grid;
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    .nhl-hero {
+      position: relative;
+      overflow: hidden;
+      border-radius: var(--nhl-radius-xl);
+      border: 1px solid var(--nhl-border);
+      background:
+        radial-gradient(circle at top right, color-mix(in srgb, var(--nhl-primary) 16%, transparent), transparent 34%),
+        radial-gradient(circle at bottom left, color-mix(in srgb, var(--nhl-info) 12%, transparent), transparent 30%),
+        linear-gradient(180deg, color-mix(in srgb, var(--nhl-panel) 92%, var(--nhl-bg-soft) 8%), var(--nhl-panel-2));
+      box-shadow: var(--nhl-shadow-sm);
+      padding: 22px 22px 18px;
+    }
+
+    .nhl-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--nhl-primary) 14%, transparent);
+      color: var(--nhl-primary);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      border: 1px solid color-mix(in srgb, var(--nhl-primary) 22%, transparent);
+    }
+
+    .nhl-hero h2 {
+      margin: 0;
+      color: var(--nhl-text);
+      font-size: 28px;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .nhl-hero p {
+      margin: 10px 0 0;
+      max-width: 68ch;
+      color: var(--nhl-text-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .nhl-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .nhl-metric {
+      border: 1px solid var(--nhl-border);
+      border-radius: var(--nhl-radius-lg);
+      background: color-mix(in srgb, var(--nhl-panel) 92%, var(--nhl-bg) 8%);
+      padding: 14px 14px 12px;
+      min-width: 0;
+      box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 16%, transparent);
+    }
+
+    .nhl-metric-label {
+      color: var(--nhl-text-soft);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .nhl-metric-value {
+      color: var(--nhl-text);
+      font-size: 28px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .nhl-metric-sub {
+      color: var(--nhl-text-muted);
+      font-size: 12px;
+      margin-top: 6px;
+    }
+
+    .nhl-section,
+    .nhl-link-card {
+      border: 1px solid var(--nhl-border);
+      border-radius: var(--nhl-radius-xl);
+      background: linear-gradient(180deg, var(--nhl-panel), var(--nhl-panel-2));
+      box-shadow: var(--nhl-shadow-sm);
+      overflow: hidden;
+    }
+
+    .nhl-section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--nhl-border);
+    }
+
+    .nhl-section-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid var(--nhl-border);
+      background: color-mix(in srgb, var(--nhl-bg-soft) 65%, var(--nhl-panel) 35%);
+    }
+
+    .nhl-section-copy {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .nhl-section-title {
+      color: var(--nhl-text);
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .nhl-section-subtitle {
+      color: var(--nhl-text-muted);
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .nhl-section-body {
+      padding: 18px 20px 20px;
+    }
+
+    .nhl-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .nhl-field {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .nhl-label {
+      color: var(--nhl-text-soft);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .nhl-input,
+    .nhl-settings-container input[type="text"],
+    .nhl-settings-container select {
+      width: 100%;
+      min-height: 46px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--nhl-border);
+      background: var(--nhl-panel);
+      color: var(--nhl-text);
+      outline: none;
+      box-sizing: border-box;
+      box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 14%, transparent);
+    }
+
+    .nhl-input::placeholder,
+    .nhl-settings-container input::placeholder {
+      color: var(--nhl-text-soft);
+      opacity: 1;
+    }
+
+    .nhl-input:focus,
+    .nhl-settings-container input:focus,
+    .nhl-settings-container select:focus {
+      border-color: color-mix(in srgb, var(--nhl-primary) 45%, transparent);
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--nhl-primary) 14%, transparent);
+    }
+
+    .nhl-note {
+      margin: 0;
+      color: var(--nhl-text-muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .nhl-link-card {
+      padding: 16px 20px;
+    }
+
+    .nhl-link-card a {
+      color: var(--nhl-primary);
+      text-decoration: none;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .nhl-link-card a:hover,
+    .nhl-link-card a:focus-visible {
+      text-decoration: underline;
+      outline: none;
+    }
+
+    .nhl-link-help {
+      margin-top: 8px;
+      color: var(--nhl-text-muted);
+      font-size: 12px;
+      line-height: 1.6;
+    }
+
+    .floatingchat-container-wrap,
+    .floatingchat-container-wrap-mobi {
+      left: unset !important;
+      right: 16px !important;
+      bottom: 16px !important;
+    }
+
+    .floating-chat-kofi-popup-iframe {
+      left: unset !important;
+      right: 16px !important;
+      bottom: 76px !important;
+    }
+
+    @media (max-width: 920px) {
+      .nhl-metrics {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .nhl-hero {
+        padding: 18px;
+      }
+
+      .nhl-hero h2 {
+        font-size: 22px;
+      }
+
+      .nhl-section-header {
+        padding: 16px;
+      }
+
+      .nhl-section-body,
+      .nhl-link-card {
+        padding: 16px;
+      }
+    }
+  </style>
+
+  <div class="nhl-settings-container">
+    <div class="nhl-shell">
+      <section class="nhl-hero">
+        <div class="nhl-eyebrow">NHL Schedule</div>
+        <h2>Show a team’s next matchup or most recent game.</h2>
+        <p>
+          Pick an NHL club, optionally add your own title, and the plugin will display either today’s game, the next
+          scheduled matchup, or the most recent finished game when that team is inactive.
+        </p>
+
+        <div class="nhl-metrics">
+          <div class="nhl-metric">
+            <div class="nhl-metric-label">League</div>
+            <div class="nhl-metric-value">NHL</div>
+            <div class="nhl-metric-sub">All current clubs supported</div>
+          </div>
+          <div class="nhl-metric">
+            <div class="nhl-metric-label">Fallback</div>
+            <div class="nhl-metric-value">Smart</div>
+            <div class="nhl-metric-sub">Upcoming game or most recent result</div>
+          </div>
+          <div class="nhl-metric">
+            <div class="nhl-metric-label">Display</div>
+            <div class="nhl-metric-value">Matchup</div>
+            <div class="nhl-metric-sub">Time, networks, venue, and team stats</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nhl-section">
+        <div class="nhl-section-header">
+          <span class="nhl-section-icon" aria-hidden="true">🏒</span>
+          <div class="nhl-section-copy">
+            <div class="nhl-section-title">Matchup settings</div>
+            <div class="nhl-section-subtitle">Choose the team and optional title shown on the display.</div>
+          </div>
+        </div>
+
+        <div class="nhl-section-body">
+          <div class="nhl-grid">
+            <div class="nhl-field">
+              <label class="nhl-label" for="title">Title</label>
+              <input
+                type="text"
+                id="title"
+                name="title"
+                class="nhl-input"
+                placeholder="Leave blank for automatic title"
+                autocomplete="off"
+              />
+              <p class="nhl-note">Leave blank to use the generated matchup title automatically.</p>
+            </div>
+
+            <div class="nhl-field">
+              <label class="nhl-label" for="nhlTeam">NHL team</label>
+              <select id="nhlTeam" name="nhlTeam" class="nhl-input" required>
+                <option value="ANA">Anaheim Ducks</option>
+                <option value="BOS">Boston Bruins</option>
+                <option value="BUF">Buffalo Sabres</option>
+                <option value="CGY">Calgary Flames</option>
+                <option value="CAR">Carolina Hurricanes</option>
+                <option value="CHI">Chicago Blackhawks</option>
+                <option value="COL">Colorado Avalanche</option>
+                <option value="CBJ">Columbus Blue Jackets</option>
+                <option value="DAL">Dallas Stars</option>
+                <option value="DET">Detroit Red Wings</option>
+                <option value="EDM">Edmonton Oilers</option>
+                <option value="FLA">Florida Panthers</option>
+                <option value="LAK">Los Angeles Kings</option>
+                <option value="MIN">Minnesota Wild</option>
+                <option value="MTL">Montréal Canadiens</option>
+                <option value="NSH">Nashville Predators</option>
+                <option value="NJD">New Jersey Devils</option>
+                <option value="NYI">New York Islanders</option>
+                <option value="NYR">New York Rangers</option>
+                <option value="OTT">Ottawa Senators</option>
+                <option value="PHI">Philadelphia Flyers</option>
+                <option value="PIT">Pittsburgh Penguins</option>
+                <option value="SEA">Seattle Kraken</option>
+                <option value="SJS">San Jose Sharks</option>
+                <option value="STL">St. Louis Blues</option>
+                <option value="TBL">Tampa Bay Lightning</option>
+                <option value="TOR">Toronto Maple Leafs</option>
+                <option value="UTA">Utah Mammoth</option>
+                <option value="VAN">Vancouver Canucks</option>
+                <option value="VGK">Vegas Golden Knights</option>
+                <option value="WPG">Winnipeg Jets</option>
+                <option value="WSH">Washington Capitals</option>
+              </select>
+              <p class="nhl-note">
+                If the team has no upcoming game, the plugin falls back to that team’s most recent one.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nhl-link-card">
+        <a href="https://github.com/shadal18/inkypi-nhl-schedule" target="_blank" rel="noopener noreferrer">
+          github.com/shadal18/inkypi-nhl-schedule
+        </a>
+        <div class="nhl-link-help">Setup help, updates, release notes, and source code.</div>
+      </section>
+    </div>
+  </div>
+</form>
+
+<script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const defaults = {
+      title: "",
+      nhlTeam: "MTL",
+    }
+
+    const values =
+      typeof loadPluginSettings !== "undefined" &&
+      loadPluginSettings &&
+      typeof pluginSettings !== "undefined" &&
+      pluginSettings
+        ? Object.assign({}, defaults, pluginSettings)
+        : defaults
+
+    const titleInput = document.getElementById("title")
+    const teamSelect = document.getElementById("nhlTeam")
+
+    if (titleInput) {
+      titleInput.value = values.title != null ? values.title : defaults.title
+    }
+
+    if (teamSelect) {
+      teamSelect.value = values.nhlTeam != null ? values.nhlTeam : defaults.nhlTeam
+    }
+
+    if (typeof kofiWidgetOverlay !== "undefined") {
+      kofiWidgetOverlay.draw("shadal", {
+        type: "floating-chat",
+        "floating-chat.donateButton.text": "I ❤️ Coffee",
+        "floating-chat.donateButton.background-color": "#00b9fe",
+        "floating-chat.donateButton.text-color": "#fff",
+      })
+    }
+  })
+</script>
+</query>
