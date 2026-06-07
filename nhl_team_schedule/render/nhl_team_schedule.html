@@ -13,8 +13,9 @@
   <section class="hero-band hero-band-empty">
     <div class="hero-copy">
       <div class="hero-kicker">NHL Schedule</div>
-      <h1 class="hero-title">No Upcoming Games Found</h1>
-      <div class="empty-copy">{{ error }}</div>
+      <h1 class="hero-title hero-title-team">{{ nhl_team_name or nhl_team_code }}</h1>
+      <h2 class="hero-empty-status">No Upcoming Games</h2>
+      <div class="empty-copy">The schedule is currently quiet for {{ nhl_team_name or nhl_team_code }}.</div>
     </div>
     <div class="hero-vs">NHL</div>
   </section>

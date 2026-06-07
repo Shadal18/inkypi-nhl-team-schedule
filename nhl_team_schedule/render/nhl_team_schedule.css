@@ -39,7 +39,8 @@ body {
 .stats-team-banner,
 .broadcast-label,
 .hero-kicker,
-.hero-vs {
+.hero-vs,
+.hero-empty-status {
   font-family: "Chakra Petch", Arial, sans-serif;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -120,6 +121,29 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.02em;
   color: #111111;
+}
+
+.hero-title-team {
+  font-size: 50px;
+  line-height: 0.9;
+  margin-bottom: 4px;
+}
+
+.hero-empty-status {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 0.95;
+  color: #111111;
+}
+
+.empty-copy {
+  margin-top: 8px;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 700;
+  color: #374151;
+  max-width: 26ch;
 }
 
 .hero-meta {

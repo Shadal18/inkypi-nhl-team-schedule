@@ -48,6 +48,7 @@ class HockeyNightBoard(BasePlugin):
             "style_settings": True,
             "title": custom_title,
             "nhl_team_code": team_code,
+            "nhl_team_name": self._team_name_from_code(team_code),
             "display_mode": "next",
             "display_label": "Today",
             "display_time": "TBD",
@@ -108,15 +109,16 @@ class HockeyNightBoard(BasePlugin):
 
             game_context["plugin_settings"] = settings
             game_context["style_settings"] = True
+            game_context["nhl_team_name"] = context["nhl_team_name"]
 
             context.update(game_context)
             return context
 
-        except requests.RequestException as exc:
+        except requests.RequestException:
             logger.exception("NHL Team Schedule request error")
-            context["error"] = f"NHL schedule could not be loaded"
+            context["error"] = "NHL schedule could not be loaded"
             return context
-        except Exception as exc:
+        except Exception:
             logger.exception("NHL Team Schedule unexpected error")
             context["error"] = "Unable to load NHL schedule"
             return context
@@ -290,6 +292,43 @@ class HockeyNightBoard(BasePlugin):
             "powerPlayPct": 0,
             "penaltyKillPct": 0,
         }
+
+    def _team_name_from_code(self, team_code):
+        teams = {
+            "ANA": "Anaheim Ducks",
+            "BOS": "Boston Bruins",
+            "BUF": "Buffalo Sabres",
+            "CGY": "Calgary Flames",
+            "CAR": "Carolina Hurricanes",
+            "CHI": "Chicago Blackhawks",
+            "COL": "Colorado Avalanche",
+            "CBJ": "Columbus Blue Jackets",
+            "DAL": "Dallas Stars",
+            "DET": "Detroit Red Wings",
+            "EDM": "Edmonton Oilers",
+            "FLA": "Florida Panthers",
+            "LAK": "Los Angeles Kings",
+            "MIN": "Minnesota Wild",
+            "MTL": "Montréal Canadiens",
+            "NSH": "Nashville Predators",
+            "NJD": "New Jersey Devils",
+            "NYI": "New York Islanders",
+            "NYR": "New York Rangers",
+            "OTT": "Ottawa Senators",
+            "PHI": "Philadelphia Flyers",
+            "PIT": "Pittsburgh Penguins",
+            "SEA": "Seattle Kraken",
+            "SJS": "San Jose Sharks",
+            "STL": "St. Louis Blues",
+            "TBL": "Tampa Bay Lightning",
+            "TOR": "Toronto Maple Leafs",
+            "UTA": "Utah Mammoth",
+            "VAN": "Vancouver Canucks",
+            "VGK": "Vegas Golden Knights",
+            "WPG": "Winnipeg Jets",
+            "WSH": "Washington Capitals",
+        }
+        return teams.get(team_code, team_code)
 
     def _logo_filename(self, team_abbrev):
         return f"{team_abbrev.lower()}.png" if team_abbrev else ""
