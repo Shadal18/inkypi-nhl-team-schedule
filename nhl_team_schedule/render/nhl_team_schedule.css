@@ -102,6 +102,10 @@ body {
   min-height: 128px;
 }
 
+.hero-band-empty {
+  min-height: 142px;
+}
+
 .hero-copy {
   min-width: 0;
 }
@@ -124,14 +128,16 @@ body {
 }
 
 .hero-title-team {
-  font-size: 50px;
-  line-height: 0.9;
-  margin-bottom: 4px;
+  font-size: 46px;
+  line-height: 0.88;
+  margin-bottom: 6px;
+  max-width: 9.5ch;
+  text-wrap: balance;
 }
 
 .hero-empty-status {
   margin: 0;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 700;
   line-height: 0.95;
   color: #111111;
@@ -139,11 +145,11 @@ body {
 
 .empty-copy {
   margin-top: 8px;
-  font-size: 18px;
-  line-height: 1.25;
+  font-size: 16px;
+  line-height: 1.2;
   font-weight: 700;
   color: #374151;
-  max-width: 26ch;
+  max-width: 30ch;
 }
 
 .hero-meta {
@@ -264,7 +270,7 @@ body {
 }
 
 .team-header-name {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1;
   text-align: right;
